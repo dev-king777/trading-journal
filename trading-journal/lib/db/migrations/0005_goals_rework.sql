@@ -1,0 +1,2 @@
+ALTER TYPE goal_type ADD VALUE IF NOT EXISTS 'daily';
+ALTER TABLE goals ADD COLUMN IF NOT EXISTS loss_limit_amount DECIMAL(12, 2);

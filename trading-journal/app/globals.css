@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 20% 5%;
+    --foreground: 0 0% 100%;
+    --card: 240 15% 9%;
+    --card-foreground: 0 0% 100%;
+    --popover: 240 15% 9%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 189 100% 50%;
+    --primary-foreground: 240 20% 5%;
+    --secondary: 240 14% 13%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 240 10% 16%;
+    --muted-foreground: 240 5% 66%;
+    --accent: 160 100% 50%;
+    --accent-foreground: 240 20% 5%;
+    --destructive: 348 100% 65%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 19% 15%;
+    --input: 240 19% 15%;
+    --ring: 189 100% 50%;
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply min-h-screen bg-background font-sans text-foreground antialiased;
+    background:
+      radial-gradient(circle at 12% 12%, rgba(0, 217, 255, 0.12), transparent 30rem),
+      radial-gradient(circle at 78% 4%, rgba(0, 255, 170, 0.08), transparent 28rem),
+      linear-gradient(180deg, #0a0a0f 0%, #08080d 58%, #050508 100%);
+  }
+
+  ::selection {
+    background: rgba(0, 217, 255, 0.28);
+  }
+}
+
+@layer utilities {
+  @keyframes auth-spark {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, 0, 0) scale(0.7);
+    }
+    15% {
+      opacity: 0.65;
+    }
+    70% {
+      opacity: 0.35;
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(18px, -120px, 0) scale(1.1);
+    }
+  }
+
+  .auth-spark {
+    animation: auth-spark 9s linear infinite;
+  }
+
+  .glass-panel {
+    @apply border border-white/10 bg-[#13131a]/80 shadow-glow backdrop-blur-xl;
+  }
+
+  .number {
+    @apply font-mono tabular-nums tracking-tight;
+  }
+}

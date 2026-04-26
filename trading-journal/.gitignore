@@ -1,0 +1,35 @@
+# dependencies
+node_modules
+
+# next
+.next
+out
+
+# production
+build
+
+# env
+.env
+.env.local
+.env.*.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dev-server*.log
+public/sw.js
+public/sw.js.map
+public/workbox-*.js
+public/workbox-*.js.map
+public/fallback-*.js
+
+# local tooling
+.codex-tmp
+blueprint.txt
+*.tsbuildinfo
+
+# misc
+.DS_Store
+Thumbs.db
