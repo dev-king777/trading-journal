@@ -29,6 +29,8 @@ export async function signUp(formData: FormData) {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
   const name = String(formData.get("name") ?? "");
+  const adminEmail = process.env.ADMIN_EMAIL ?? "draga4lifee@gmail.com";
+  const isAdminSignup = email.trim().toLowerCase() === adminEmail.trim().toLowerCase();
   const supabase = createSupabaseServerClient();
 
   if (!supabase) {
@@ -73,10 +75,15 @@ export async function signUp(formData: FormData) {
     redirect("/signup?error=Failed%20to%20create%20account");
   }
 
-  // Mark user as pending approval and generate a one-time approval token
-  const approvalToken = crypto.randomBytes(32).toString("hex");
   const admin = createSupabaseAdminClient();
-  await admin.from("users").update({ approved: false, approval_token: approvalToken }).eq("id", userId);
+  let approvalToken: string | null = null;
+
+  if (isAdminSignup) {
+    await admin.from("users").update({ approved: true, approval_token: null }).eq("id", userId);
+  } else {
+    approvalToken = crypto.randomBytes(32).toString("hex");
+    await admin.from("users").update({ approved: false, approval_token: approvalToken }).eq("id", userId);
+  }
 
   // Sign the user in so they have a valid session (but they'll be gated at /pending)
   const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
@@ -85,13 +92,15 @@ export async function signUp(formData: FormData) {
   }
 
   // Notify admin by email (non-blocking — failure here shouldn't break signup)
-  try {
-    await sendApprovalRequestEmail({ userEmail: email, userName: name, approvalToken });
-  } catch {
-    // Email sending is best-effort; approval link still works via token
+  if (approvalToken) {
+    try {
+      await sendApprovalRequestEmail({ userEmail: email, userName: name, approvalToken });
+    } catch {
+      // Email sending is best-effort; approval link still works via token
+    }
   }
 
-  redirect("/pending");
+  redirect(isAdminSignup ? "/dashboard" : "/pending");
 }
 
 export async function resetPassword(formData: FormData) {
