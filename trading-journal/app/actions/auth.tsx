@@ -10,20 +10,32 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 export async function signIn(formData: FormData) {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
-  const supabase = createSupabaseServerClient();
+  
+  try {
+    const supabase = createSupabaseServerClient();
 
-  if (!supabase) {
-    redirect("/login?error=Supabase%20environment%20variables%20are%20required");
+    if (!supabase) {
+      redirect("/login?error=Supabase%20environment%20variables%20are%20required");
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "undefined";
+      redirect(`/login?error=${encodeURIComponent(error.message + " (URL: " + url + ")")}`);
+    }
+
+    redirect("/dashboard");
+  } catch (err: any) {
+    // If it's a redirect, we must rethrow it as Next.js handles redirects via thrown promises
+    if (err && typeof err === "object" && err.digest?.startsWith("NEXT_REDIRECT")) {
+      throw err;
+    }
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "undefined";
+    redirect(`/login?error=${encodeURIComponent("Exception: " + err.message + " (URL: " + url + ")")}`);
   }
-
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-  if (error) {
-    redirect(`/login?error=${encodeURIComponent(error.message)}`);
-  }
-
-  redirect("/dashboard");
 }
+
 
 export async function signUp(formData: FormData) {
   const email = String(formData.get("email") ?? "");
