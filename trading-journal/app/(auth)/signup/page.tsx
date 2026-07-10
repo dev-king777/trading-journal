@@ -1,4 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 
 import { signUp } from "@/app/actions/auth";
 import { AuthCard } from "@/components/auth/auth-card";
@@ -6,6 +10,8 @@ import { GoldButton } from "@/components/auth/gold-button";
 import { GoldInput } from "@/components/auth/gold-input";
 
 export default function SignupPage({ searchParams }: { searchParams: { error?: string } }) {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <AuthCard
       title="Join the brotherhood."
@@ -37,7 +43,24 @@ export default function SignupPage({ searchParams }: { searchParams: { error?: s
           <label htmlFor="password" className="text-sm font-medium text-white/80">
             Password
           </label>
-          <GoldInput id="password" name="password" type="password" minLength={8} autoComplete="new-password" required />
+          <div className="relative">
+            <GoldInput
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              minLength={8}
+              autoComplete="new-password"
+              className="pr-10"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 focus:outline-none transition-colors"
+            >
+              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
         <GoldButton type="submit" className="w-full">
           Create account

@@ -8,7 +8,7 @@ import { sendApprovalRequestEmail } from "@/lib/email";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function signIn(formData: FormData) {
-  const email = String(formData.get("email") ?? "");
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
   
   try {
@@ -38,7 +38,7 @@ export async function signIn(formData: FormData) {
 
 
 export async function signUp(formData: FormData) {
-  const email = String(formData.get("email") ?? "");
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
   const name = String(formData.get("name") ?? "");
   const adminEmail = process.env.ADMIN_EMAIL ?? "draga4lifee@gmail.com";
@@ -116,7 +116,7 @@ export async function signUp(formData: FormData) {
 }
 
 export async function resetPassword(formData: FormData) {
-  const email = String(formData.get("email") ?? "");
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const supabase = createSupabaseServerClient();
 
   if (!supabase) {
